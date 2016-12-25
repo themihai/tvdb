@@ -16,7 +16,6 @@
 package tvdb
 
 import (
-	"github.com/aliem/tvdb/swagger"
 	"github.com/dghubble/sling"
 	"net/http"
 )
@@ -26,18 +25,41 @@ const (
 
 	loginURL   = "/login"
 	refreshURL = "/refresh_token"
+
+	// Version of the client
+	Version = "0.1.0"
 )
 
 // Client is the TvDB REST API client
 type Client struct {
 	sling *sling.Sling
-	Auth  *swagger.Auth
+
+	// Authentication configuration
+	Auth *Auth
+
+	// Services
+	Search   *SearchService
+	Series   *SeriesService
+	Episodes *EpisodesService
+	Token    *TokenService
+}
+
+// Auth authentication scheme
+type Auth struct {
+	APIKey   string
+	UserKey  string
+	Username string
 }
 
 // NewClient returns a new TvDB REST client
-func NewClient(httpClient *http.Client, apiKey string, userKey string) *Client {
-	base := sling.New().Client(httpClient).Base(baseURL)
+func NewClient(httpClient *http.Client, auth *Auth) *Client {
+	base := sling.New().Client(httpClient).Base(baseURL).Set("user-agent", "tvdb.go client "+Version)
 	return &Client{
-		sling: base,
+		sling:    base,
+		Auth:     auth,
+		Search:   new(SearchService),
+		Series:   new(SeriesService),
+		Episodes: new(EpisodesService),
+		Token:    new(TokenService),
 	}
 }
