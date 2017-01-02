@@ -53,13 +53,21 @@ type Auth struct {
 
 // NewClient returns a new TvDB REST client
 func NewClient(httpClient *http.Client, auth *Auth) *Client {
-	base := sling.New().Client(httpClient).Base(baseURL).Set("user-agent", "tvdb.go client "+Version)
+	base := sling.New()
+	base.Client(httpClient).Base(baseURL).Set("user-agent", "tvdb.go client "+Version)
+
 	return &Client{
 		sling:    base,
 		Auth:     auth,
-		Search:   new(SearchService),
-		Series:   new(SeriesService),
-		Episodes: new(EpisodesService),
-		Token:    new(TokenService),
+		Search:   newSearchService(base),
+		Series:   newSeriesService(base),
+		Episodes: newEpisodesService(base),
+		Token:    newTokenService(base, auth),
 	}
+}
+
+// Login calls the Client.Token#Login method
+func (c *Client) Login() error {
+	_, err := c.Token.Login()
+	return err
 }
