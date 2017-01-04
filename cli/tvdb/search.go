@@ -18,10 +18,8 @@ func Search(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Println(results)
-
 	fmt.Fprintf(c.App.Writer, "  n, Series Name, Series ID\n")
-	for n, item := range *results {
+	for n, item := range results {
 		fmt.Fprintf(c.App.Writer, "%3d, %s, %d\n", n, item.SeriesName, item.ID)
 	}
 	return nil

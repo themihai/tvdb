@@ -5,13 +5,19 @@ import (
 	"github.com/dghubble/sling"
 )
 
+// SeriesData response container
+type SeriesData struct {
+	Data   Series      `json:"data,omitempty"`
+	Errors []JSONError `json:"errors,omitempty"`
+}
+
 // Series type
 type Series struct {
-	ID              string   `json:"id"`
+	ID              int32    `json:"id"`
 	SeriesName      string   `json:"seriesName"`
 	Aliases         []string `json:"aliases,omitempty"`
 	Banner          string   `json:"banner,omitempty"`
-	SeriesID        int32    `json:"seriesId,omitempty"`
+	SeriesID        string   `json:"seriesId,omitempty"`
 	Status          string   `json:"status,omitempty"`
 	FirstAired      string   `json:"firstAired,omitempty"`
 	Network         string   `json:"network,omitempty"`
@@ -35,10 +41,6 @@ type SeriesService struct {
 	sling *sling.Sling
 }
 
-func (s *SeriesService) getClient() *sling.Sling {
-	return s.sling.New().Path("/series")
-}
-
 // NewSeriesService initialize a new SeriesService
 func newSeriesService(sling *sling.Sling) *SeriesService {
 	return &SeriesService{
@@ -47,12 +49,11 @@ func newSeriesService(sling *sling.Sling) *SeriesService {
 }
 
 // Get one TV Serie by ID
-func (s *SeriesService) Get(id string) (*Series, error) {
-	client := s.getClient()
-	series := new(Series)
+func (s *SeriesService) Get(id int32) (Series, error) {
+	series := new(SeriesData)
 	jsonError := new(JSONError)
-	path := fmt.Sprintf("/%s", id)
+	path := fmt.Sprintf("/series/%d", id)
 
-	_, err := client.Path(path).Receive(series, jsonError)
-	return series, relevantError(err, *jsonError)
+	_, err := s.sling.New().Get(path).Receive(series, jsonError)
+	return series.Data, relevantError(err, *jsonError)
 }

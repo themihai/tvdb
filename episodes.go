@@ -51,10 +51,6 @@ type EpisodesService struct {
 	sling *sling.Sling
 }
 
-func (s *EpisodesService) getClient() *sling.Sling {
-	return s.sling.New().Path("/episodes")
-}
-
 // newSeriesService initialize a new SeriesService
 func newEpisodesService(sling *sling.Sling) *EpisodesService {
 	return &EpisodesService{
@@ -63,12 +59,11 @@ func newEpisodesService(sling *sling.Sling) *EpisodesService {
 }
 
 // Get a single episode
-func (s *EpisodesService) Get(id int32) (*Episode, error) {
-	client := s.getClient()
-	episode := &Episode{}
-	jsonError := &JSONError{}
+func (s *EpisodesService) Get(id int32) (Episode, error) {
+	episode := new(Episode)
+	jsonError := new(JSONError)
 
-	path := fmt.Sprintf("/%d", id)
-	_, err := client.Path(path).Receive(episode, jsonError)
-	return episode, relevantError(err, *jsonError)
+	path := fmt.Sprintf("/episodes/%d", id)
+	_, err := s.sling.New().Path(path).Receive(episode, jsonError)
+	return *episode, relevantError(err, *jsonError)
 }

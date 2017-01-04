@@ -41,29 +41,29 @@ type SeriesSearchResults struct {
 }
 
 // Search search by SearchParams
-func (s *SearchService) Search(params *SearchParams) (*[]SeriesSearchData, error) {
+func (s *SearchService) Search(params *SearchParams) ([]SeriesSearchData, error) {
 	series := new(SeriesSearchResults)
 	jsonError := new(JSONError)
 	_, err := s.sling.New().Get("/search/series").QueryStruct(params).Receive(series, jsonError)
-	return series.Data, relevantError(err, *jsonError)
+	return *series.Data, relevantError(err, *jsonError)
 }
 
 // ByName Search series by name
-func (s *SearchService) ByName(name string) (*[]SeriesSearchData, error) {
+func (s *SearchService) ByName(name string) ([]SeriesSearchData, error) {
 	params := new(SearchParams)
 	params.Name = &name
 	return s.Search(params)
 }
 
 // ByImdbID Search by IMDB id
-func (s *SearchService) ByImdbID(id string) (*[]SeriesSearchData, error) {
+func (s *SearchService) ByImdbID(id string) ([]SeriesSearchData, error) {
 	params := new(SearchParams)
 	params.ImdbID = &id
 	return s.Search(params)
 }
 
 // ByZap2itID Search by Zap2it id
-func (s *SearchService) ByZap2itID(id string) (*[]SeriesSearchData, error) {
+func (s *SearchService) ByZap2itID(id string) ([]SeriesSearchData, error) {
 	params := new(SearchParams)
 	params.Zap2itID = &id
 	return s.Search(params)
