@@ -2,6 +2,8 @@ package tvdb
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/dghubble/sling"
 )
 
@@ -46,6 +48,24 @@ type Episode struct {
 	SiteRatingCount    int32    `json:"siteRatingCount,omitempty"`
 }
 
+// SearchParams optional episodes search parameters
+type EpisodeSearchParams struct {
+	AbsoluteNumber *string `url:"absoluteNumber,omitempty"`
+	AiredSeason    *string `url:"airedSeason,omitempty"`
+	AiredEpisode   *string `url:"airedEpisode,omitempty"`
+	DvdSeason      *string `url:"dvdSeason,omitempty"`
+	DvdEpisode     *string `url:"dvdEpisode,omitempty"`
+	ImdbId         *string `url:"imdbId,omitempty"`
+	Page           *string `url:"page,omitempty"`
+}
+
+// Episodes Search Results
+type EpisodesRecordData struct {
+	Data   []Episode `json:"data,omitempty"`
+	Errors JSONError `json:"jsonError,omitempty"`
+	Links  Links
+}
+
 // EpisodesService the episode service
 type EpisodesService struct {
 	sling *sling.Sling
@@ -66,4 +86,52 @@ func (s *EpisodesService) Get(id int32) (Episode, error) {
 	path := fmt.Sprintf("/episodes/%d", id)
 	_, err := s.sling.New().Path(path).Receive(episode, jsonError)
 	return *episode, relevantError(err, *jsonError)
+}
+
+// Note, only use the page value in EpisodeSearchParams
+func (s *EpisodesService) ListEpisodes(seriesId int32, params *EpisodeSearchParams) (EpisodesRecordData, error) {
+	data := new(EpisodesRecordData)
+	jsonError := new(JSONError)
+
+	path := fmt.Sprintf("/series/%d/episodes", seriesId)
+	_, e := s.sling.New().Get(path).QueryStruct(params).Receive(data, jsonError)
+
+	return *data, relevantError(e, *jsonError)
+}
+
+// Find episodes meeting certain criteria
+func (s *EpisodesService) SearchEpisodes(seriesId int32, params *EpisodeSearchParams) (EpisodesRecordData, error) {
+	data := new(EpisodesRecordData)
+	jsonError := new(JSONError)
+
+	path := fmt.Sprintf("/series/%d/episodes/query", seriesId)
+	_, e := s.sling.New().Get(path).QueryStruct(params).Receive(data, jsonError)
+	return *data, relevantError(e, *jsonError)
+}
+
+// Check if an episode is in the future
+func (e *Episode) IsInFuture() (bool) {
+	aired := e.ParseAired()
+	if aired == nil {
+		return true
+	}
+
+	now := time.Now()
+	return aired.After(now)
+}
+
+func (e *Episode) ParseAired() (* time.Time) {
+	if e.FirstAired == "" {
+		return nil
+	}
+
+	here, _ := time.LoadLocation("Local")
+	var mm time.Month
+	var dd int
+	var yy int
+
+	fmt.Sscanf(e.FirstAired, "%d-%d-%d", &yy, &mm, &dd)
+
+	tt := time.Date(yy, mm, dd, 0,0,0,0, here)
+	return &tt
 }

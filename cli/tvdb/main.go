@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/aliem/tvdb"
+	"github.com/purdyk/tvdb"
 	"gopkg.in/urfave/cli.v2"
 )
 
@@ -38,6 +38,11 @@ func main() {
 		{
 			Name:   "series",
 			Action: Series,
+		},
+		{
+			Name: "next",
+			Aliases: []string{"n"},
+			Action: Next,
 		},
 	}
 
