@@ -23,11 +23,11 @@ func (e JSONError) Empty() bool {
 
 // relevantError returns an error or nil
 // selects the right error based on the Empty() result
-func relevantError(httpError error, jsonError JSONError) error {
+func relevantError(httpError error, jsonError *JSONError) error {
 	if httpError != nil {
 		return httpError
 	}
-	if !jsonError.Empty() {
+	if jsonError != nil {
 		return jsonError
 	}
 	return nil

@@ -49,11 +49,11 @@ func newSeriesService(sling *sling.Sling) *SeriesService {
 }
 
 // Get one TV Serie by ID
-func (s *SeriesService) Get(id int32) (Series, error) {
-	series := new(SeriesData)
-	jsonError := new(JSONError)
+func (s *SeriesService) Get(id int32) (*Series, error) {
+	series := &SeriesData{}
+	var jsonError *JSONError = nil
 	path := fmt.Sprintf("/series/%d", id)
 
 	_, err := s.sling.New().Get(path).Receive(series, jsonError)
-	return series.Data, relevantError(err, *jsonError)
+	return &series.Data, relevantError(err, jsonError)
 }
