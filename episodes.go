@@ -61,9 +61,8 @@ type EpisodeSearchParams struct {
 
 // Episodes Search Results
 type EpisodesRecordData struct {
-	Data   []Episode `json:"data,omitempty"`
-	Errors JSONError `json:"jsonError,omitempty"`
-	Links  Links
+	Data  []Episode `json:"data,omitempty"`
+	Links Links  `json:"links,omitempty"`
 }
 
 // EpisodesService the episode service
@@ -121,7 +120,7 @@ func (e *Episode) IsInFuture() (bool) {
 }
 
 // I guess date/time parsing is difficult in go
-func (e *Episode) ParseAired() (* time.Time) {
+func (e *Episode) ParseAired() (*time.Time) {
 	if e.FirstAired == "" {
 		return nil
 	}
@@ -133,6 +132,6 @@ func (e *Episode) ParseAired() (* time.Time) {
 
 	fmt.Sscanf(e.FirstAired, "%d-%d-%d", &yy, &mm, &dd)
 
-	tt := time.Date(yy, mm, dd, 0,0,0,0, here)
+	tt := time.Date(yy, mm, dd, 0, 0, 0, 0, here)
 	return &tt
 }
