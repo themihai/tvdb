@@ -27,7 +27,7 @@ func relevantError(httpError error, jsonError *JSONError) error {
 	if httpError != nil {
 		return httpError
 	}
-	if jsonError != nil {
+	if jsonError != nil && !jsonError.Empty() {
 		return jsonError
 	}
 	return nil

@@ -28,7 +28,7 @@ func newTokenService(sling *sling.Sling, auth *Auth) *TokenService {
 
 // Login requests and applies a new Token to the base client
 func (s *TokenService) Login() (*Token, error) {
-	var jsonError *JSONError = nil
+	jsonError := &JSONError{}
 	_, err := s.sling.New().Post("/login").BodyJSON(s.Auth).Receive(s.Token, jsonError)
 
 	s.sling.Set("Authorization", "Bearer "+s.Token.Token)
@@ -37,7 +37,7 @@ func (s *TokenService) Login() (*Token, error) {
 
 // Refresh refreshes the stored token setting the new Authorization header
 func (s *TokenService) Refresh() (*Token, *http.Response, error) {
-	jsonError := new(JSONError)
+	jsonError := &JSONError{}
 	res, err := s.sling.New().Post("/refresh_token").Receive(s.Token, jsonError)
 
 	s.sling.Set("Authorization", "Bearer "+s.Token.Token)

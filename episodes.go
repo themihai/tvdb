@@ -80,7 +80,7 @@ func newEpisodesService(sling *sling.Sling) *EpisodesService {
 // Get a single episode
 func (s *EpisodesService) Get(id int32) (*Episode, error) {
 	episode := &Episode{}
-	var jsonError *JSONError = nil
+	jsonError := &JSONError{}
 
 	path := fmt.Sprintf("/episodes/%d", id)
 	_, err := s.sling.New().Path(path).Receive(episode, jsonError)
@@ -90,7 +90,7 @@ func (s *EpisodesService) Get(id int32) (*Episode, error) {
 // Note, only use the page value in EpisodeSearchParams
 func (s *EpisodesService) ListEpisodes(seriesId int32, params *EpisodeSearchParams) (*EpisodesRecordData, error) {
 	data := &EpisodesRecordData{}
-	var jsonError *JSONError = nil
+	jsonError := &JSONError{}
 
 	path := fmt.Sprintf("/series/%d/episodes", seriesId)
 	_, e := s.sling.New().Get(path).QueryStruct(params).Receive(data, jsonError)
@@ -101,7 +101,7 @@ func (s *EpisodesService) ListEpisodes(seriesId int32, params *EpisodeSearchPara
 // Find episodes meeting certain criteria
 func (s *EpisodesService) SearchEpisodes(seriesId int32, params *EpisodeSearchParams) (*EpisodesRecordData, error) {
 	data := &EpisodesRecordData{}
-	var jsonError *JSONError = nil
+	jsonError := &JSONError{}
 
 	path := fmt.Sprintf("/series/%d/episodes/query", seriesId)
 	_, e := s.sling.New().Get(path).QueryStruct(params).Receive(data, jsonError)

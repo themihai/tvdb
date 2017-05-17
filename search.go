@@ -43,7 +43,7 @@ type SeriesSearchResults struct {
 // Search search by SearchParams
 func (s *SearchService) Search(params *SearchParams) ([]*SeriesSearchData, error) {
 	series := &SeriesSearchResults{}
-	var jsonError *JSONError = nil
+	jsonError := &JSONError{}
 	_, err := s.sling.New().Get("/search/series").QueryStruct(params).Receive(series, jsonError)
 	return series.Data, relevantError(err, jsonError)
 }
