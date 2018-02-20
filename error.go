@@ -28,7 +28,7 @@ func (j *JSONError) UnmarshalJSON(p []byte) error {
 	var v2 ErrorMap
 	err := json.Unmarshal(p, &v2)
 	if err == nil {
-		j.Message = fmt.Sprintf("%q", err)
+		j.Message = fmt.Sprintf("%q", v2)
 	}
 	return err
 }
