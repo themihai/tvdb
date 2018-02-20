@@ -1,7 +1,7 @@
 package tvdb
 
 import (
-	"github.com/dghubble/sling"
+	"github.com/themihai/sling"
 )
 
 // SearchService provides an interface to the search engine

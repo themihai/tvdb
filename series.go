@@ -2,7 +2,7 @@ package tvdb
 
 import (
 	"fmt"
-	"github.com/dghubble/sling"
+	"github.com/themihai/sling"
 )
 
 // SeriesData response container

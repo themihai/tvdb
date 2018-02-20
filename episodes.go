@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dghubble/sling"
+	"github.com/themihai/sling"
 )
 
 // EpisodeRecordData Searches results
@@ -62,7 +62,7 @@ type EpisodeSearchParams struct {
 // Episodes Search Results
 type EpisodesRecordData struct {
 	Data  []Episode `json:"data,omitempty"`
-	Links Links  `json:"links,omitempty"`
+	Links Links     `json:"links,omitempty"`
 }
 
 // EpisodesService the episode service
@@ -109,7 +109,7 @@ func (s *EpisodesService) SearchEpisodes(seriesId int32, params *EpisodeSearchPa
 }
 
 // Check if an episode is in the future
-func (e *Episode) IsInFuture() (bool) {
+func (e *Episode) IsInFuture() bool {
 	aired := e.ParseAired()
 	if aired == nil {
 		return true
@@ -120,7 +120,7 @@ func (e *Episode) IsInFuture() (bool) {
 }
 
 // I guess date/time parsing is difficult in go
-func (e *Episode) ParseAired() (*time.Time) {
+func (e *Episode) ParseAired() *time.Time {
 	if e.FirstAired == "" {
 		return nil
 	}

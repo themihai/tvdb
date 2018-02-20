@@ -16,7 +16,7 @@
 package tvdb
 
 import (
-	"github.com/dghubble/sling"
+	"github.com/themihai/sling"
 	"net/http"
 )
 
