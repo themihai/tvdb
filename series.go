@@ -5,10 +5,12 @@ import (
 	"github.com/themihai/sling"
 )
 
+type JSONErrors []JSONError
+
 // SeriesData response container
 type SeriesData struct {
-	Data   Series      `json:"data,omitempty"`
-	Errors []JSONError `json:"errors,omitempty"`
+	Data   Series     `json:"data,omitempty"`
+	Errors JSONErrors `json:"errors,omitempty"`
 }
 
 // Series type

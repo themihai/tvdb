@@ -10,13 +10,11 @@ type JSONError struct {
 	Message string `json:"error,omitempty"`
 }
 
-func (j *JSONError) UnmarshalJSON(p []byte) error {
-	type MessageErr struct {
-		Message string `json:"error,omitempty"`
-	}
-	var v MessageErr
+func (j *JSONErrors) UnmarshalJSON(p []byte) error {
+
+	var v []JSONError
 	if err := json.Unmarshal(p, &v); err == nil {
-		j.Message = v.Message
+		*j = JSONErrors(v)
 		return nil
 	}
 	/*
@@ -28,7 +26,11 @@ func (j *JSONError) UnmarshalJSON(p []byte) error {
 	var v2 ErrorMap
 	err := json.Unmarshal(p, &v2)
 	if err == nil {
-		j.Message = fmt.Sprintf("%q", v2)
+		var ja JSONErrors
+		for k, v := range v2 {
+			ja = append(ja, JSONError{Message: fmt.Sprintf("%s:%s", k, v)})
+		}
+		*j = ja
 	}
 	return err
 }
